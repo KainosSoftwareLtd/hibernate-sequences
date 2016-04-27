@@ -1,0 +1,26 @@
+server:
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 9014
+
+logging:
+  level: DEBUG
+  loggers:
+    org.hibernate.SQL:
+      level: DEBUG
+
+databaseApp:
+  driverClass: "org.postgresql.Driver"
+  user: "hib_seq"
+  password: "hib_seq_pass"
+  url: "jdbc:postgresql://localhost/hib_seq"
+  validationQuery: "/* MyApplication Health Check */ SELECT 1"
+  properties:
+      charSet: UTF-8
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.show_sql: true
+      hibernate.hbm2ddl.auto: create
+
