@@ -15,7 +15,7 @@ import javax.persistence.*;
                 @Parameter(name = "increment_size", value = "50"),
                 @Parameter(name = "optimizer", value = "hilo")
         })
-public class GenericGeneratorSeqHiLo {
+public class GenericGeneratorSeqHiLo extends DomainEntity {
 
     @Id
     @Column(name = "ID")

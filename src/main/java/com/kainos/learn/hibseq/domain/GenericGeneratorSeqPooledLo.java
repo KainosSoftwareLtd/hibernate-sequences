@@ -15,7 +15,7 @@ import javax.persistence.*;
                 @Parameter(name = "increment_size", value = "50"),
                 @Parameter(name = "optimizer", value = "pooled-lo")
         })
-public class GenericGeneratorSeqPooledLo {
+public class GenericGeneratorSeqPooledLo extends DomainEntity {
 
     @Id
     @Column(name = "ID")

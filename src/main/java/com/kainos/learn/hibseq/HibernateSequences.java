@@ -1,5 +1,6 @@
 package com.kainos.learn.hibseq;
 
+import com.codahale.metrics.servlets.MetricsServlet;
 import com.kainos.learn.hibseq.db.*;
 import com.kainos.learn.hibseq.domain.*;
 import io.dropwizard.Application;

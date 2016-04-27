@@ -24,6 +24,7 @@ object ApplicationBuild extends Build {
       "io.dropwizard" % "dropwizard-core" % "0.9.2",
       "io.dropwizard" % "dropwizard-hibernate" % "0.9.2",
       "io.dropwizard" % "dropwizard-client" % "0.9.2",
+      "io.dropwizard" % "dropwizard-metrics" % "0.9.2",
       "io.dropwizard" % "dropwizard-testing" % "0.9.2",
 //      "io.dropwizard" % "dropwizard-core" % "0.7.2",
 //      "io.dropwizard" % "dropwizard-hibernate" % "0.7.2",
