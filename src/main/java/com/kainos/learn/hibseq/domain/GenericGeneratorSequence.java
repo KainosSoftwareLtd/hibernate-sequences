@@ -8,7 +8,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "generic_generator_sequence")
 @GenericGenerator(name = "gen_generator_sequence", strategy = "sequence",
-        parameters = {@Parameter(name = "sequence", value = "gen_generator_seq")})
+        parameters = {
+                @Parameter(name = "parameters", value = "CACHE 100"),
+                @Parameter(name = "sequence", value = "gen_generator_seq")
+        })
 public class GenericGeneratorSequence extends DomainEntity {
 
     @Id

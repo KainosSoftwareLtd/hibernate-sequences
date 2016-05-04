@@ -347,7 +347,7 @@ other standard strategies covered here you will generate duplicate ID values eve
 In previous implementations however [it did not](https://hibernate.atlassian.net/browse/HHH-9287). 
 `PooledLo` optimizer also works well with ordinary sequence ID generation strategy. Of course when 
 using standard Hibernate sequence generator on a sequence created for use with pooled optimizers gaps in ID values 
-will be created
+will be created.
 
 The standard sequence generation strategy without optimization can be used on sequences created for `Pooled` and `PooledLo`
 optimization. This makes it the safest strategy when its not clear how other applications will be using the underlying database.
@@ -355,7 +355,8 @@ optimization. This makes it the safest strategy when its not clear how other app
 #### Ordering
 Sometimes we need to generate values in order (i.e. generated values are always bigger or smaller then the previous ones).
 This is achievable using a sequence that is not cached with standard generation strategy. However it is worth noting 
-that when using multiple applications that query a single sequence using
+that when using multiple applications that query a single sequence using any optimization strategy using `increment_size > 1`
+ordering cannot be assured.
 
 #### Performance
 An important aspect for most use cases would be the performance of different strategies. Here is a sample time output given in milliseconds 
@@ -366,12 +367,22 @@ Avg time of Ordinary sequence: 24732
 Avg time of PooledLo sequence: 14433
 Avg time of HiLo sequence: 13664
 ```
-Note that the times may vary depending on the size of the entities, database and database drivers used. For this tests sequences
-were not using cache on the database side.
+Note that the times may vary depending on the size of the entities, database and database drivers used. For this test sequences
+were not using cache on the database side. Note that Hibernate auto generation does not allow to insert additional custom parameters
+for optimized sequences. It is not possible to set a cache size with `@Parameter(name = "parameters", value = "CACHE 100")`.
+However using cache on the database side with ordinary sequence did not improve performance at all:
+```
+Avg time of Ordinary sequence: 24897
+```
+This indicates that the bottleneck for time performance in this case is the application itself, not the database. 
+This of course might change when multiple applications query a single database or when executing queries directly with a
+SQL script.
+
+## Sources
+* [Source code](https://github.com/hibernate/hibernate-orm/tree/4.3.11.Final/)
+* [Hibernate Reference](https://docs.jboss.org/hibernate/orm/3.3/reference/en/html/mapping.html#mapping-declaration-id)
+* [Vlad Mihalcea - Hibernate Hidden Gem: The Pooled-Lo Optimizer](https://dzone.com/articles/hibernate-hidden-gem-pooled-lo)
 
 ## TODO
-* add script/code to make a few batch inserts and get the average time for perf tests
 * verify SequenceHiLoGenerator vs SequenceGenerator + HiLoOptimizer //SequenceHiLoGenerator uses LegacyHiLoAlgorithmOptimizer, 
 would be usefull to write a few things about that, since there seem to be a few small differences
-* Test perf with sequence caching as well!
-* verify that SequenceIdentity strategy does not work on postgres // comments in the current implementation state that it doesn't
