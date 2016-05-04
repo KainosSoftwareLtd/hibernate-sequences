@@ -19,7 +19,8 @@ public class HibernateSequences extends Application<com.kainos.learn.hibseq.conf
             GenericGeneratorSequence.class,
             GenericGeneratorSeqHiLo.class,
             GenericGeneratorSeqPooled.class,
-            GenericGeneratorSeqPooledLo.class) {
+            GenericGeneratorSeqPooledLo.class,
+            GenericGeneratorDoubleSequence.class) {
 
         @Override
         public DataSourceFactory getDataSourceFactory(com.kainos.learn.hibseq.config.HibernateSequences configuration) {
@@ -45,10 +46,12 @@ public class HibernateSequences extends Application<com.kainos.learn.hibseq.conf
         GenericGeneratorSeqHiLoDao genericGeneratorSeqHiLoDao = new GenericGeneratorSeqHiLoDao(hibernate.getSessionFactory());
         GenericGeneratorSeqPooledDao genericGeneratorSeqPooledDao = new GenericGeneratorSeqPooledDao(hibernate.getSessionFactory());
         GenericGeneratorSeqPooledLoDao genericGeneratorSeqPooledLoDao = new GenericGeneratorSeqPooledLoDao(hibernate.getSessionFactory());
+        GenericGeneratorDoubleSequenceDao genericGeneratorDoubleSequenceDao = new GenericGeneratorDoubleSequenceDao(hibernate.getSessionFactory());
 
         //Resources
         environment.jersey().register(new AppResource(generatedValueSequenceDao, genericGeneratorSequenceDao,
-                genericGeneratorSeqHiLoDao, genericGeneratorSeqPooledDao, genericGeneratorSeqPooledLoDao));
+                genericGeneratorSeqHiLoDao, genericGeneratorSeqPooledDao, genericGeneratorSeqPooledLoDao,
+                genericGeneratorDoubleSequenceDao));
     }
 
     @Override

@@ -1,12 +1,11 @@
 package com.kainos.learn.hibseq.db;
 
 import com.kainos.learn.hibseq.domain.GenericGeneratorSeqPooledLo;
-import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class GenericGeneratorSeqPooledLoDao extends AbstractDAO<GenericGeneratorSeqPooledLo> {
+public class GenericGeneratorSeqPooledLoDao extends DomainEntityDao<GenericGeneratorSeqPooledLo> {
 
     public GenericGeneratorSeqPooledLoDao(SessionFactory factory) {
         super(factory);

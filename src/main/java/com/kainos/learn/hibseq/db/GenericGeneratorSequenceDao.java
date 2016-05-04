@@ -1,12 +1,11 @@
 package com.kainos.learn.hibseq.db;
 
 import com.kainos.learn.hibseq.domain.GenericGeneratorSequence;
-import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class GenericGeneratorSequenceDao extends AbstractDAO<GenericGeneratorSequence> {
+public class GenericGeneratorSequenceDao extends DomainEntityDao<GenericGeneratorSequence> {
 
     public GenericGeneratorSequenceDao(SessionFactory factory) {
         super(factory);

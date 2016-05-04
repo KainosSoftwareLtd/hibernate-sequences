@@ -7,10 +7,12 @@ server:
     port: 9014
 
 logging:
-  level: DEBUG
+# level: DEBUG
+  level: INFO
   loggers:
     org.hibernate.SQL:
-      level: DEBUG
+    # level: DEBUG
+      level: INFO
 
 databaseApp:
   driverClass: "org.postgresql.Driver"
@@ -21,6 +23,7 @@ databaseApp:
   properties:
       charSet: UTF-8
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
-      hibernate.show_sql: true
+    # hibernate.show_sql: true
+      hibernate.show_sql: false
       hibernate.hbm2ddl.auto: create
 

@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "generated_value_sequence")
-@SequenceGenerator(name = "gen_value_sequence", sequenceName = "gen_value_sequence")    //seems to be using pooled sequence instead of hilo by default...
+@SequenceGenerator(name = "gen_value_sequence", sequenceName = "gen_value_sequence")    // defaults to using pooled optimizer
 public class GeneratedValueSequence extends DomainEntity {
 
     @Column(name = "ID", nullable = false)
