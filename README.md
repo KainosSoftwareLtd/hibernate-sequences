@@ -3,9 +3,13 @@
 Project showcasing Hibernate ID generation with sequences. It covers different ID generation strategies/optimizers and 
 a sample custom sequence ID generator.
 
+Hibernate is a very useful tool to map Java objects to relational database models in a simple manner. However this simplicity
+forces Hibernate to do a lot of things behind the scene and assume a lot of default behaviours. Someone new to Hibernate 
+might not expect certain assumptions it makes. One such field within Hibernate is ID generation strategies.
+
 ## Usage
 * Make sure you have Postgres running and create a database for this project.
-* Review the config to amend database connection details and logging level(INFO recommended for performance runs, DEBUG 
+* Review the config to amend database connection details and logging level(`INFO` recommended for performance runs, `DEBUG` 
 for inspecting Hibernate usage)
 * Run the project with `./go`
 * You can fiddle around by hitting the endpoints that create test entities and use the sequences as a consequence.
@@ -42,7 +46,7 @@ that our usage of Hibernate will get replicated across the project for consisten
 We are going to explore different ways of generating ID values with sequences and consider their pros and cons. To demonstrate
 different ID generation strategies I've set up a sample Dropwizard service that persists entities comprised of a single ID column.
 
-In this example I'm using Dropwizard 0.9.2. This particular version of Dropwizard uses Hibernate 4.3.11.Final under the hood.
+In this example I'm using Dropwizard 0.9.2. This particular version of Dropwizard uses **Hibernate 4.3.11.Final** under the hood.
 
 ### Main sequence based generation strategies
 
@@ -122,7 +126,7 @@ public synchronized Serializable generate(AccessCallback callback) {
 }
 ```
 
-Since this method of generating ID values forces the HiLoOptimizer to hold `high` abd `low` values in memory the method 
+Since this method of generating ID values forces the HiLoOptimizer to hold `high` and `low` values in memory the method 
 is `synchronized`. Even though HiLoOptimizer saves a lot of database calls and the generate method is not compute intensive 
 we can imagine a scenario where this could be a problem. If we try to insert a lot of entities using the same optimizer 
 into a highly efficient clustered database we might actually degrade performance by using this optimization with certain 
@@ -174,7 +178,7 @@ public synchronized Serializable generate(AccessCallback callback) {
 Similarly to HiLoOptimizer PooledOptimizer is synchronized, so it suffers the same drawbacks.
 
 #### Sequence with PooledLo optimizer
-This one operates similarly to Pooled optimizer, but instead of keeping the last value in the 
+This one operates similarly to Pooled optimizer, but instead of keeping the last value of the 
 range that is being currently assigned, it keeps the range starting value. 
 Range that is being assigned is `[sequence_value, sequence_value + increment_size)`.
 
@@ -199,6 +203,24 @@ public synchronized Serializable generate(AccessCallback callback) {
 
 Similarly to the two previous optimizers PooledLoOptimizer is synchronized.
 
+### javax.persistence.SequenceGenerator annotation
+
+You can often find that, in order to generate ID values from a sequence people use `javax.persistence.SequenceGenerator` annotation
+instead of `org.hibernate.annotations.GenericGenerator`.
+```
+@SequenceGenerator(name = "gen_value_sequence", sequenceName = "gen_value_sequence")
+```
+This is fine if you know what happens, but if you do not, you might quickly encounter a lot of issues.
+
+First thing worth noting is that if you do not specify `allocationSize` parameter the generation optimization strategy 
+chosen by default in this particular version of Hibernate is `Pooled` and the `increment_size` is set to `50`. On older
+versions of Hibernate `SequenceGenerator` defaulted to `HiLo`. You can still force newer versions of Hibernate to use `HiLo` if you set 
+`hibernate.id.new_generator_mappings` Hibernate config property to `false`. This default behaviour might cause issues if 
+you are creating the database with migrations and do not set the database sequence increment size to match what Hibernate expects.
+
+However if you do set `SequenceGenerator` property `allocationSize` to `1` it will revert back to using the plain 
+unoptimized sequence generation strategy.
+
 ### Custom ID generation strategies
 
 Sometimes circumstances force us to generate ID values that are not covered by existing Hibernate generators. For example
@@ -208,7 +230,7 @@ implement your own ID generator. You can do that either by implementing one of H
 `org.hibernate.id.IdentifierGenerator` or other interfaces like `org.hibernate.id.PersistentIdentifierGenerator`. 
 If all you need to do is apply some tweaks to an existing strategy you can also extend existing generators.
 
-Lets consider a (very unlikely) scenario that we need to create a String ID that is a concatenation of values originating
+Let's consider a (very unlikely) scenario that we need to create a String ID that is a concatenation of values originating
 from two database sequences. Let us assume that the format would be `ID1_ID2`. 
 
 #### Implementation
@@ -382,7 +404,3 @@ SQL script.
 * [Source code](https://github.com/hibernate/hibernate-orm/tree/4.3.11.Final/)
 * [Hibernate Reference](https://docs.jboss.org/hibernate/orm/3.3/reference/en/html/mapping.html#mapping-declaration-id)
 * [Vlad Mihalcea - Hibernate Hidden Gem: The Pooled-Lo Optimizer](https://dzone.com/articles/hibernate-hidden-gem-pooled-lo)
-
-## TODO
-* verify SequenceHiLoGenerator vs SequenceGenerator + HiLoOptimizer //SequenceHiLoGenerator uses LegacyHiLoAlgorithmOptimizer, 
-would be usefull to write a few things about that, since there seem to be a few small differences

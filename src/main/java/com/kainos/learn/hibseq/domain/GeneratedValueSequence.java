@@ -4,7 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "generated_value_sequence")
-@SequenceGenerator(name = "gen_value_sequence", sequenceName = "gen_value_sequence")    // defaults to using pooled optimizer
+// defaults to using pooled optimizer with increment_size = 50 when allocationSize = 1 not set
+@SequenceGenerator(name = "gen_value_sequence", sequenceName = "gen_value_sequence"/*, allocationSize = 1*/)
 public class GeneratedValueSequence extends DomainEntity {
 
     @Column(name = "ID", nullable = false)
