@@ -9,7 +9,7 @@ might not expect certain assumptions it makes. One such field within Hibernate i
 
 ## Usage
 * Make sure you have Postgres running and create a database for this project.
-* Review the config to amend database connection details and logging level(`INFO` recommended for performance runs, `DEBUG` 
+* Review the config to amend database connection details and logging level (`INFO` recommended for performance runs, `DEBUG` 
 for inspecting Hibernate usage)
 * Run the project with `./go`
 * You can fiddle around by hitting the endpoints that create test entities and use the sequences as a consequence.
@@ -306,13 +306,12 @@ private Long generateValue(SessionImplementor session, String query) {
                 return id;
             }
             finally {
-                session.getTransactionCoordinator().getJdbcCoordinator().release( rs, st );
+                session.getTransactionCoordinator().getJdbcCoordinator().release(rs, st);
             }
         }
         finally {
-            session.getTransactionCoordinator().getJdbcCoordinator().release( st );
+            session.getTransactionCoordinator().getJdbcCoordinator().release(st);
         }
-
     }
     catch (SQLException sqle) {
         throw session.getFactory().getSQLExceptionHelper().convert(

@@ -102,13 +102,12 @@ public class DoubleSequenceGenerator implements PersistentIdentifierGenerator, B
                     return id;
                 }
                 finally {
-                    session.getTransactionCoordinator().getJdbcCoordinator().release( rs, st );
+                    session.getTransactionCoordinator().getJdbcCoordinator().release(rs, st);
                 }
             }
             finally {
-                session.getTransactionCoordinator().getJdbcCoordinator().release( st );
+                session.getTransactionCoordinator().getJdbcCoordinator().release(st);
             }
-
         }
         catch (SQLException sqle) {
             throw session.getFactory().getSQLExceptionHelper().convert(
