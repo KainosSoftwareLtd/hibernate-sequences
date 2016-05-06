@@ -91,7 +91,7 @@ protected IntegralDataTypeHolder generateHolder(SessionImplementor session) {
 ```
 
 Note that this generation strategy is NOT `synchronized`. This prevents Hibernate ID generation 
-from being a bottleneck in batch inserts. The database itself ensures that the values fetched from 
+from being too much of a bottleneck in multi-threaded batch inserts. The database itself ensures that the values fetched from 
 a sequence are never duplicate and the implementation is thread-safe.
 
 #### Sequence with HiLo optimizer
@@ -210,7 +210,7 @@ instead of `org.hibernate.annotations.GenericGenerator`.
 ```
 @SequenceGenerator(name = "gen_value_sequence", sequenceName = "gen_value_sequence")
 ```
-This is fine if you know what happens, but if you do not, you might quickly encounter a lot of issues.
+This is fine if you know what this does, but if you do not, you might quickly encounter a lot of issues.
 
 First thing worth noting is that if you do not specify `allocationSize` parameter the generation optimization strategy 
 chosen by default in this particular version of Hibernate is `Pooled` and the `increment_size` is set to `50`. On older
@@ -371,7 +371,8 @@ using standard Hibernate sequence generator on a sequence created for use with p
 will be created.
 
 The standard sequence generation strategy without optimization can be used on sequences created for `Pooled` and `PooledLo`
-optimization. This makes it the safest strategy when its not clear how other applications will be using the underlying database.
+optimization. Only issue this creates are gaps in the generated ID values. This makes it the safest strategy 
+when its not clear how other applications will be using the underlying database.
 
 #### Ordering
 Sometimes we need to generate values in order (i.e. generated values are always bigger or smaller then the previous ones).
@@ -389,9 +390,9 @@ Avg time of PooledLo sequence: 14433
 Avg time of HiLo sequence: 13664
 ```
 Note that the times may vary depending on the size of the entities, database and database drivers used. For this test sequences
-were not using cache on the database side. Note that Hibernate auto generation does not allow to insert additional custom parameters
+were not using cache on the database side. Hibernate auto generation does not allow to insert additional custom parameters
 for optimized sequences. It is not possible to set a cache size with `@Parameter(name = "parameters", value = "CACHE 100")`.
-However using cache on the database side with ordinary sequence did not improve performance at all:
+However in this case using cache on the database side with ordinary sequence did not improve performance at all:
 ```
 Avg time of Ordinary sequence: 24897
 ```
