@@ -1,4 +1,4 @@
-# Hibernate Sequences WIP
+# Hibernate Sequences
 
 Project showcasing Hibernate ID generation with sequences. It covers different ID generation strategies/optimizers and 
 a sample custom sequence ID generator.
